@@ -1,0 +1,12 @@
+{
+  "images": [
+    {
+      "imageid": "img1",
+      "tags": "java"
+    },
+    {
+      "imageid": "img2",
+      "tags": "java,ruby"
+    }
+  ]
+}
