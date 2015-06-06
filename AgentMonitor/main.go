@@ -2,12 +2,12 @@ package main
 
 import(
 	"fmt"
-//	"time"
+	"time"
 	"net/http"
 	"io/ioutil"
 	"encoding/json"
-//	"github.com/fsouza/go-dockerclient"
-//	"github.com/Go-Docker-Hackathon/team-LHL/AgentHost/resource"
+	"github.com/fsouza/go-dockerclient"
+	"github.com/Go-Docker-Hackathon/team-LHL/AgentHost/resource"
 )
 
 type Agent struct {
@@ -29,7 +29,6 @@ func getAgents(goServerUrl string) []Agent {
 	bs, _ := ioutil.ReadAll(response.Body)
 	var agents []Agent
 	err := json.Unmarshal(bs, &agents)
-	fmt.Println("------------------------")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -40,7 +39,9 @@ func setAgentResources(goServerUrl string) {
 	client, _ := docker.NewClient("unix:///var/run/docker.sock")
 	for _, agent := range getAgents(goServerUrl) {
 		container, _ := client.InspectContainer(agent.Agent_name)
+		fmt.Println(container.Image)
 		resources := resource.GetImageTags(container.Image)
+		fmt.Println(resources)
 		for _, r := range resources {
 			http.Post("http://" + goServerUrl + ":8153/go/api/agents-resources/" + agent.Uuid + "/" + r, string(""), nil)		
 		}
@@ -65,21 +66,20 @@ func removeIdleAgents(goServerUrl string) {
 		if agent.Status == "Idle" &&  len(history.Jobs) > 0{
 			http.Post("http://" + goServerUrl + ":8153/go/api/agents/" + agent.Uuid + "/disable", string(""), nil)
 			http.Post("http://" + goServerUrl + ":8153/go/api/agents/" + agent.Uuid + "/delete", string(""), nil)
-			client.KillContainer(agent.Agent_name)
-			client.RemoveContainer(agent.Agent_name)
+			client.KillContainer(docker.KillContainerOptions{ID: agent.Agent_name, Signal: docker.SIGKILL,})
+			client.RemoveContainer(docker.RemoveContainerOptions{ID: agent.Agent_name, Force: true,})
 		}
 	}
 }
 
 
 func main (){
-	var goServerUrl = "10.18.7.153"
+	var goServerUrl = "10.18.5.26"
 	for {
+		fmt.Println("-----------------trigger---------------")
 		removeIdleAgents(goServerUrl)
 		enablePendingAgents(goServerUrl)
 		setAgentResources(goServerUrl)
-		time.Sleep(1000)
+		time.Sleep(1 * time.Second)
 	}
-	fmt.Println(getAgents(goServerUrl))
-//http.Post("http://10.18.5.26:8153/go/api/agents/")
 }
