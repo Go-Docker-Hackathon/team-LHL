@@ -22,11 +22,49 @@
     </authorization>
     <pipeline name="up42">
       <materials>
-        <hg url="../manual-testing/ant_hg/dummy" dest="dest_dir" materialName="dummyhg" />
+        <git url="git://10.18.8.31/dev-tools" materialName="code" />
       </materials>
       <stage name="up42_stage">
         <jobs>
           <job name="up42_job">
+            <tasks>
+              <exec command="lsa">
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>ruby</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="golang">
+      <materials>
+        <git url="git://10.18.8.31/dev-tools" />
+      </materials>
+      <stage name="Stage-1">
+        <jobs>
+          <job name="job-1">
+            <tasks>
+              <exec command="ls" />
+            </tasks>
+          </job>
+          <job name="job-2">
+            <tasks>
+              <exec command="ls" />
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="Stage-2">
+        <jobs>
+          <job name="job-1">
+            <tasks>
+              <exec command="ls" />
+            </tasks>
+          </job>
+          <job name="job-2">
             <tasks>
               <exec command="ls" />
             </tasks>
@@ -35,5 +73,12 @@
       </stage>
     </pipeline>
   </pipelines>
+  <agents>
+    <agent hostname="localhost.localdomain" ipaddress="10.18.5.26" uuid="ad5a371b-05cd-488f-bf68-b4fde5f2ab97">
+      <resources>
+        <resource>ruby</resource>
+      </resources>
+    </agent>
+  </agents>
 </cruise>
 
