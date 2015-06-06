@@ -30,6 +30,11 @@ class Api::AgentsController < Api::ApiController
     render_operation_result(result)
   end
 
+  def resources
+    agent_service.addResources(current_user, result = HttpOperationResult.new, params[:uuid], params[:resource])
+    render_operation_result(result)
+  end
+
   def disable
     agent_service.disableAgents(current_user, result = HttpOperationResult.new, [params[:uuid]])
     render_operation_result(result)

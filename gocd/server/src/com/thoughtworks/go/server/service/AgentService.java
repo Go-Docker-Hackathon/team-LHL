@@ -286,6 +286,24 @@ public class AgentService {
         }
     }
 
+    public void addResources(Username username, HttpOperationResult operationResult, final String uuid, String resource) {
+        if (!hasOperatePermission(username, operationResult)) {
+            return;
+        }
+        List<AgentInstance> agents = new ArrayList<AgentInstance>();
+        if (!populateAgentInstancesForUUIDs(operationResult, new ArrayList<String>() { {add(uuid);} }, agents)) {
+            return;
+        }
+        try {
+            List<TriStateSelection> selections = new ArrayList<TriStateSelection>();
+            selections.add(new TriStateSelection(resource, TriStateSelection.Action.add, true));
+            agentConfigService.modifyResources(agents.toArray(new AgentInstance[0]), selections);
+            operationResult.ok(String.format("Resource(s) modified on %s agent(s)", 1));
+        } catch (Exception e) {
+            operationResult.notAcceptable("Could not modify resources:" + e.getMessage(), HealthStateType.general(HealthStateScope.GLOBAL));
+        }
+    }
+
     public void modifyEnvironments(Username username, HttpOperationResult operationResult, List<String> uuids, List<TriStateSelection> selections) {
         if (!hasOperatePermission(username, operationResult)) {
             return;

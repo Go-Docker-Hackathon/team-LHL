@@ -71,6 +71,12 @@
   </pipelines>
   <agents>
     <agent hostname="localhost.localdomain" ipaddress="10.18.5.26" uuid="ad5a371b-05cd-488f-bf68-b4fde5f2ab97" />
+    <agent hostname="localhost.localdomain" ipaddress="10.18.5.26" uuid="c5aad679-5b24-4a0d-afcb-998c786e1532">
+      <resources>
+        <resource>ruby</resource>
+        <resource>java</resource>
+      </resources>
+    </agent>
   </agents>
 </cruise>
 
