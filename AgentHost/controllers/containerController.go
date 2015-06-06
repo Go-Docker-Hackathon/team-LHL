@@ -20,16 +20,20 @@ func getPostData(r *http.Request) map[string]string {
 	return postData
 }
 
-func createContainer(image string) string {
+func createContainer(image string, goServer string) string {
 	client, _ := docker.NewClient("unix:///var/run/docker.sock")
+	var commands = make([] string, 1)
+	commands[0] = "/startGoAgent.sh " + goServer + " &"
 	config := &docker.Config{
             Image: image,
+			Cmd: commands,
     }
     containerOptions := docker.CreateContainerOptions{
         Config: config,
         HostConfig: nil,
+		
     }
-	fmt.Println("--------creating---image is--%v", image, "--------")
+	fmt.Println("--------creating---image:--", image, "--------")
     exec, err := client.CreateContainer(containerOptions)
     s, _ := json.Marshal(exec)
 	if err != nil {
@@ -50,9 +54,10 @@ func destroyContainer(containers []string) {
 
 func CreateContainer(w http.ResponseWriter, r *http.Request) string {
 	data := getPostData(r)
+	goServer := strings.Split(r.RemoteAddr,":")[0]
 	resources := strings.Split(data["resources"], "|")
 	image := resource.GetImage(resources)
-	return createContainer(image)
+	return createContainer(image, goServer)
 }
 
 func DestroyContainer(w http.ResponseWriter, r *http.Request) string {

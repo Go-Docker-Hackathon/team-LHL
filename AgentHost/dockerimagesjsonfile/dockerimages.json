@@ -1,10 +1,10 @@
 [
     {
-      "Imageid": "ubuntu",
+      "Imageid": "36113749e1e8",
       "Tags": ["java"]
     },
     {
-      "Imageid": "img2",
+      "Imageid": "36113749e1e8",
       "Tags": ["java","ruby"]
     }
 ]

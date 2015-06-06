@@ -14,7 +14,7 @@ type Image struct {
 
 func getImagesList() []Image {
 	var images []Image
-	absPath, _ := filepath.Abs("./dockerimagesjsonfile/dockerimages.josn")
+	absPath, _ := filepath.Abs("./dockerimagesjsonfile/dockerimages.json")
 	file,_ := ioutil.ReadFile(absPath)	
 	err := json.Unmarshal(file, &images)
 	if err != nil {

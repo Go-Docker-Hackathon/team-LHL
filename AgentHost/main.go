@@ -5,5 +5,5 @@ import(
 )
 
 func main() {
-    api.NewServer("localhost", api.DefaultServerTransport, 9001, api.DefaultServerReadTimeout, false, route().handlers)
+    api.NewServer("10.18.2.10", api.DefaultServerTransport, 9001, api.DefaultServerReadTimeout, false, route().handlers)
 }
