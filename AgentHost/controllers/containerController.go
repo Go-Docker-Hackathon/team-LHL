@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 	"net/http"
-	"encoding/json"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/Go-Docker-Hackathon/team-LHL/AgentHost/resource"
 )
@@ -22,8 +21,7 @@ func getPostData(r *http.Request) map[string]string {
 
 func createContainer(image string, goServer string) string {
 	client, _ := docker.NewClient("unix:///var/run/docker.sock")
-	var commands = make([] string, 1)
-	commands[0] = "/startGoAgent.sh " + goServer + " &"
+	var commands = []string{"/startGoAgent.sh", goServer}
 	config := &docker.Config{
             Image: image,
 			Cmd: commands,
@@ -34,12 +32,9 @@ func createContainer(image string, goServer string) string {
 		
     }
 	fmt.Println("--------creating---image:--", image, "--------")
-    exec, err := client.CreateContainer(containerOptions)
-    s, _ := json.Marshal(exec)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return string(s)
+    exec, _ := client.CreateContainer(containerOptions)
+	client.StartContainer(exec.ID, nil)
+	return exec.ID
 }
 
 func destroyContainer(containers []string) {
@@ -58,11 +53,4 @@ func CreateContainer(w http.ResponseWriter, r *http.Request) string {
 	resources := strings.Split(data["resources"], "|")
 	image := resource.GetImage(resources)
 	return createContainer(image, goServer)
-}
-
-func DestroyContainer(w http.ResponseWriter, r *http.Request) string {
-	data := getPostData(r)
-	containers := strings.Split(data["containers"], ",")
-	destroyContainer(containers)
-	return "Destroied."
 }
