@@ -50,7 +50,7 @@ func destroyContainer(containers []string) {
 
 func CreateContainer(w http.ResponseWriter, r *http.Request) string {
 	data := getPostData(r)
-	resources := strings.Split(data["resources"], ",")
+	resources := strings.Split(data["resources"], "|")
 	image := resource.GetImage(resources)
 	return createContainer(image)
 }
