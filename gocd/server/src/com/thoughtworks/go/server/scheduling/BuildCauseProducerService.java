@@ -16,15 +16,13 @@
 
 package com.thoughtworks.go.server.scheduling;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.thoughtworks.go.config.*;
 import com.thoughtworks.go.config.materials.MaterialConfigs;
 import com.thoughtworks.go.config.materials.Materials;
-import com.thoughtworks.go.domain.JobInstance;
-import com.thoughtworks.go.domain.JobInstances;
-import com.thoughtworks.go.domain.JobPlan;
 import com.thoughtworks.go.domain.MaterialRevisions;
 import com.thoughtworks.go.domain.buildcause.BuildCause;
 import com.thoughtworks.go.domain.materials.Material;
@@ -222,17 +220,14 @@ public class BuildCauseProducerService {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug(format("scheduling pipeline %s with build-cause %s", pipelineName, buildCause));
                     }
-                    // get resources
-                    HashMap<String, Collection<Resource>> resourceAllocations = new HashMap<String, Collection<Resource>>();
-                    for (StageConfig stageConfig : pipelineConfig) {
-                        JobConfigs jobs = stageConfig.getJobs();
-                        for (JobConfig job : jobs) {
-                            resourceAllocations.put(pipelineName + ":" + stageConfig.name() + ":" + job.name(), job.resources());
-                        }
-                    }
-                    System.out.println("All resources for pipeline " + pipelineName + ", " + resourceAllocations);
 
+                    HashMap<String, Resources> resourcesForEachJob = getResourcesForEachJob(pipelineConfig, pipelineName);
                     // create containers
+                    for (String jobIdentifier : resourcesForEachJob.keySet()) {
+                        Resources resources = resourcesForEachJob.get(jobIdentifier);
+                        sendContainerCreationRequest(resources.toString());
+                    }
+
                 } else {
                     buildType.notifyPipelineNotScheduled(pipelineConfig);
                 }
@@ -259,6 +254,36 @@ public class BuildCauseProducerService {
             LOGGER.error(message, e);
             return showError(pipelineName, message, e.getMessage());
         }
+    }
+
+    private void sendContainerCreationRequest(String resources) {
+        String ip = "10.18.2.10";
+        String port = "9001";
+        String method = "create";
+        String command = "curl -d '&resources=" + resources + "' http://" + ip + ":" + port + "/" + method;
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+            process.waitFor();
+            System.out.println("Agent for " + resources.toString() + " has been created.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private HashMap<String, Resources> getResourcesForEachJob(PipelineConfig pipelineConfig, String pipelineName) {
+        // get resources
+        HashMap<String, Resources> resourceAllocations = new HashMap<String, Resources>();
+        for (StageConfig stageConfig : pipelineConfig) {
+            JobConfigs jobs = stageConfig.getJobs();
+            for (JobConfig job : jobs) {
+                resourceAllocations.put(pipelineName + ":" + stageConfig.name() + ":" + job.name(), job.resources());
+            }
+        }
+        System.out.println("All resources for pipeline " + pipelineName + ", " + resourceAllocations);
+        return resourceAllocations;
     }
 
     private void updateChangedRevisions(CaseInsensitiveString pipelineName, BuildCause buildCause) {
