@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	// "bytes"
 	"strings"
 	"net/http"
 	"encoding/json"
@@ -18,7 +16,6 @@ func getPostData(r *http.Request) map[string]string {
 			postData[string(k)] = strings.Join(v,",")
 		}
 	}
-	fmt.Println(postData)
 	return postData
 }
 
