@@ -222,12 +222,7 @@ public class BuildCauseProducerService {
                     }
 
                     HashMap<String, Resources> resourcesForEachJob = getResourcesForEachJob(pipelineConfig, pipelineName);
-                    // create containers
-                    for (String jobIdentifier : resourcesForEachJob.keySet()) {
-                        Resources resources = resourcesForEachJob.get(jobIdentifier);
-                        sendContainerCreationRequest(resources.toString());
-                    }
-
+                    requestCreateContainers(resourcesForEachJob);
                 } else {
                     buildType.notifyPipelineNotScheduled(pipelineConfig);
                 }
@@ -256,7 +251,12 @@ public class BuildCauseProducerService {
         }
     }
 
-
+    private void requestCreateContainers(HashMap<String, Resources> resourcesForEachJob) {
+        for (String jobIdentifier : resourcesForEachJob.keySet()) {
+            Resources resources = resourcesForEachJob.get(jobIdentifier);
+            sendContainerCreationRequest(resources.toString());
+        }
+    }
 
     private void sendContainerCreationRequest(String resources) {
         String ip = getAgentsPoolHost();  //"10.18.2.10";
@@ -282,7 +282,6 @@ public class BuildCauseProducerService {
         }
         return agentsPoolHost;
     }
-
 
     private HashMap<String, Resources> getResourcesForEachJob(PipelineConfig pipelineConfig, String pipelineName) {
         // get resources
