@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="75">
+  <server artifactsdir="artifacts" commandRepositoryLocation="default" serverId="4a6f4c68-cec1-4c34-9c5c-4296ef564892" />
+  <agents>
+    <agent hostname="105991c9e8d4" ipaddress="172.17.0.58" uuid="a029112a-cd42-4e49-a710-9c90bf2b2c27">
+      <resources>
+        <resource>abc</resource>
+        <resource>xyz</resource>
+        <resource>123</resource>
+        <resource>234</resource>
+      </resources>
+    </agent>
+    <agent hostname="105991c9e8d4" ipaddress="172.17.0.58" uuid="a029112a-cd42-4e49-a710-9c90bf2b2c28" />
+    <agent hostname="9a05439e1cea" ipaddress="172.17.0.59" uuid="1f76e27c-2fc7-45d1-986d-8e32b9f267f0" />
+  </agents>
+</cruise>
+

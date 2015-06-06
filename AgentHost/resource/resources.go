@@ -5,6 +5,7 @@ import(
 	"encoding/json"
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 )
 
 type Image struct {
@@ -22,6 +23,8 @@ func getImagesList() []Image {
 	}
 	return images
 }
+
+
 
 func contains(item string, list []string) bool {
 	var contain = false
@@ -41,6 +44,15 @@ func tagsMatch(tags []string, resources []string) bool {
 		}
 	}
 	return true
+}
+
+func GetImageTags(imageId string) []string {
+	for _, image := range getImagesList() {
+		if strings.Contains(imageId, image.Imageid) {
+			return image.Tags
+		}
+	}
+	return []string{}
 }
 
 func GetImage(resources []string) string {
