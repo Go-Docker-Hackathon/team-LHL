@@ -17,6 +17,10 @@ func route() Route {
         api.Respond("application/json", "utf-8", controllers.CreateContainer)(w, r)
     }
 	
+	handlers["/destroy"] = func(w http.ResponseWriter, r *http.Request) {
+        api.Respond("application/json", "utf-8", controllers.DestroyContainer)(w, r)
+    }
+	
     return Route {
     	handlers: handlers,
     }
