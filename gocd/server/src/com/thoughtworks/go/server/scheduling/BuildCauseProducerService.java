@@ -260,11 +260,12 @@ public class BuildCauseProducerService {
         String ip = "10.18.2.10";
         String port = "9001";
         String method = "create";
-        String command = "curl -d '&resources=" + resources + "' http://" + ip + ":" + port + "/" + method;
+        String command = "curl -d &resources=" + resources.replace(" ", "") + " http://" + ip + ":" + port + "/" + method;
         try {
+            System.out.println("Invoke command: " + command);
             Process process = Runtime.getRuntime().exec(command);
             process.waitFor();
-            System.out.println("Agent for " + resources.toString() + " has been created.");
+            System.out.println("Agent for [" + resources.toString() + "] has been created.");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
