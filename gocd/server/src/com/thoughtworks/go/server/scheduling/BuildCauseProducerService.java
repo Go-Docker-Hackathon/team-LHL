@@ -17,12 +17,20 @@
 package com.thoughtworks.go.server.scheduling;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.thoughtworks.go.config.CaseInsensitiveString;
 import com.thoughtworks.go.config.PipelineConfig;
+import com.thoughtworks.go.config.Resource;
+import com.thoughtworks.go.config.StageConfig;
 import com.thoughtworks.go.config.materials.MaterialConfigs;
 import com.thoughtworks.go.config.materials.Materials;
+import com.thoughtworks.go.domain.JobInstance;
+import com.thoughtworks.go.domain.JobInstances;
+import com.thoughtworks.go.domain.JobPlan;
 import com.thoughtworks.go.domain.MaterialRevisions;
 import com.thoughtworks.go.domain.buildcause.BuildCause;
 import com.thoughtworks.go.domain.materials.Material;
@@ -81,6 +89,7 @@ public class BuildCauseProducerService {
     private final MaterialConfigConverter materialConfigConverter;
     private final MaterialExpansionService materialExpansionService;
     private SchedulingPerformanceLogger schedulingPerformanceLogger;
+    private JobInstanceService jobInstanceService;
 
     @Autowired
     public BuildCauseProducerService(
@@ -97,7 +106,8 @@ public class BuildCauseProducerService {
             SystemEnvironment systemEnvironment,
             MaterialConfigConverter materialConfigConverter,
             MaterialExpansionService materialExpansionService,
-            SchedulingPerformanceLogger schedulingPerformanceLogger) {
+            SchedulingPerformanceLogger schedulingPerformanceLogger,
+            JobInstanceService jobInstanceService) {
         this.schedulingChecker = schedulingChecker;
         this.serverHealthService = serverHealthService;
         this.pipelineScheduleQueue = pipelineScheduleQueue;
@@ -110,6 +120,7 @@ public class BuildCauseProducerService {
         this.materialConfigConverter = materialConfigConverter;
         this.materialExpansionService = materialExpansionService;
         this.schedulingPerformanceLogger = schedulingPerformanceLogger;
+        this.jobInstanceService = jobInstanceService;
         this.materialChecker = new MaterialChecker(materialRepository);
         this.triggerMonitor = triggerMonitor;
     }
@@ -217,6 +228,23 @@ public class BuildCauseProducerService {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug(format("scheduling pipeline %s with build-cause %s", pipelineName, buildCause));
                     }
+
+                    // get resources
+                    // PipelineConfig pipelineConfig = goConfigService.getCurrentConfig().pipelineConfigByName(new CaseInsensitiveString("golang"));
+                    //pipelineConfig.name()
+                    Set<Resource> allResources = new HashSet<Resource>();
+                    for (StageConfig stageConfig : pipelineConfig) {
+                        JobInstances jobInstances = jobInstanceService.currentJobsOfStage(pipelineName, stageConfig);
+                        for (JobInstance jobInstance : jobInstances) {
+                            JobPlan plan = jobInstance.getPlan();
+                            List<Resource> resources = plan.getResources();
+                            allResources.addAll(resources);
+                        }
+                    }
+
+                    System.out.println(allResources);
+
+                    // create containers
                 } else {
                     buildType.notifyPipelineNotScheduled(pipelineConfig);
                 }

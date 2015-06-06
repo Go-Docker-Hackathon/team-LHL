@@ -136,7 +136,7 @@ public class BuildCauseProducerServiceTest {
         return new BuildCauseProducerService(mockSchedulingCheckerService, mockServerHealthService,
                 pipelineScheduleQueue, goConfigService, materialRepository, materialUpdateStatusNotifier,
                 mockMaterialUpdateService, specificMaterialRevisionFactory, triggerMonitor, pipelineService, new SystemEnvironment(), materialConfigConverter,
-                materialExpansionService, schedulingPerformanceLogger);
+                materialExpansionService, schedulingPerformanceLogger, null);
     }
 
     @Test

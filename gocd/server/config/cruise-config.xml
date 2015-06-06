@@ -49,6 +49,10 @@
             <tasks>
               <exec command="ls" />
             </tasks>
+            <resources>
+              <resource>java</resource>
+              <resource>ruby</resource>
+            </resources>
           </job>
           <job name="job-2">
             <tasks>
@@ -77,6 +81,7 @@
     <agent hostname="localhost.localdomain" ipaddress="10.18.5.26" uuid="ad5a371b-05cd-488f-bf68-b4fde5f2ab97">
       <resources>
         <resource>ruby</resource>
+        <resource>java</resource>
       </resources>
     </agent>
   </agents>
