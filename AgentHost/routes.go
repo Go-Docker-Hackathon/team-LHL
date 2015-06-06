@@ -14,12 +14,8 @@ func route() Route {
 	var handlers = map[string]func(http.ResponseWriter, *http.Request){}
     
     handlers["/create"] = func(w http.ResponseWriter, r *http.Request) {
-        api.Respond("application/json", "utf-8", controllers.createContainer)(w, r)
+        api.Respond("application/json", "utf-8", controllers.CreateContainer)(w, r)
     }
-	
-	handlers["/resources"] = func(w http.ResponseWriter, r *http.Request) {
-		api.Respond("application/json", "uft-8", controllers.getResources)(w, r)
-	}
 	
     return Route {
     	handlers: handlers,
