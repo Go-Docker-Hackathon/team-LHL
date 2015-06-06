@@ -16,10 +16,7 @@
 
 package com.thoughtworks.go.server.scheduling;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.thoughtworks.go.config.*;
@@ -226,14 +223,14 @@ public class BuildCauseProducerService {
                         LOGGER.debug(format("scheduling pipeline %s with build-cause %s", pipelineName, buildCause));
                     }
                     // get resources
-                    Set<Resource> allResources = new HashSet<Resource>();
+                    HashMap<String, Collection<Resource>> resourceAllocations = new HashMap<String, Collection<Resource>>();
                     for (StageConfig stageConfig : pipelineConfig) {
                         JobConfigs jobs = stageConfig.getJobs();
                         for (JobConfig job : jobs) {
-                            allResources.addAll(job.resources());
+                            resourceAllocations.put(pipelineName + ":" + stageConfig.name() + ":" + job.name(), job.resources());
                         }
                     }
-                    System.out.println("All resources for pipeline " + pipelineName + ", " + allResources);
+                    System.out.println("All resources for pipeline " + pipelineName + ", " + resourceAllocations);
 
                     // create containers
                 } else {
