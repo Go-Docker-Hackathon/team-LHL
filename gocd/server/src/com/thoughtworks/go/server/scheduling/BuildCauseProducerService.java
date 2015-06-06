@@ -22,10 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.thoughtworks.go.config.CaseInsensitiveString;
-import com.thoughtworks.go.config.PipelineConfig;
-import com.thoughtworks.go.config.Resource;
-import com.thoughtworks.go.config.StageConfig;
+import com.thoughtworks.go.config.*;
 import com.thoughtworks.go.config.materials.MaterialConfigs;
 import com.thoughtworks.go.config.materials.Materials;
 import com.thoughtworks.go.domain.JobInstance;
@@ -228,21 +225,15 @@ public class BuildCauseProducerService {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug(format("scheduling pipeline %s with build-cause %s", pipelineName, buildCause));
                     }
-
                     // get resources
-                    // PipelineConfig pipelineConfig = goConfigService.getCurrentConfig().pipelineConfigByName(new CaseInsensitiveString("golang"));
-                    //pipelineConfig.name()
                     Set<Resource> allResources = new HashSet<Resource>();
                     for (StageConfig stageConfig : pipelineConfig) {
-                        JobInstances jobInstances = jobInstanceService.currentJobsOfStage(pipelineName, stageConfig);
-                        for (JobInstance jobInstance : jobInstances) {
-                            JobPlan plan = jobInstance.getPlan();
-                            List<Resource> resources = plan.getResources();
-                            allResources.addAll(resources);
+                        JobConfigs jobs = stageConfig.getJobs();
+                        for (JobConfig job : jobs) {
+                            allResources.addAll(job.resources());
                         }
                     }
-
-                    System.out.println(allResources);
+                    System.out.println("All resources for pipeline " + pipelineName + ", " + allResources);
 
                     // create containers
                 } else {
