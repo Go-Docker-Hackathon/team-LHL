@@ -256,8 +256,10 @@ public class BuildCauseProducerService {
         }
     }
 
+
+
     private void sendContainerCreationRequest(String resources) {
-        String ip = "10.18.2.10";
+        String ip = getAgentsPoolHost();  //"10.18.2.10";
         String port = "9001";
         String method = "create";
         String command = "curl -d &resources=" + resources.replace(" ", "") + " http://" + ip + ":" + port + "/" + method;
@@ -271,6 +273,14 @@ public class BuildCauseProducerService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private String getAgentsPoolHost() {
+        String agentsPoolHost = System.getenv("AGENTS_POOL_HOST");
+        if(agentsPoolHost == null){
+            return "10.18.2.10";
+        }
+        return agentsPoolHost;
     }
 
 
