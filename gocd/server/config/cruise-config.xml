@@ -22,13 +22,13 @@
     </authorization>
     <pipeline name="up42">
       <materials>
-        <git url="git://10.18.8.31/dev-tools" materialName="code" />
+        <git url="git://10.18.8.31/go.pipeline.git" materialName="code" />
       </materials>
       <stage name="up42_stage">
         <jobs>
           <job name="up42_job">
             <tasks>
-              <exec command="lsa">
+              <exec command="ls">
                 <runif status="passed" />
               </exec>
             </tasks>
@@ -41,7 +41,7 @@
     </pipeline>
     <pipeline name="golang">
       <materials>
-        <git url="git://10.18.8.31/dev-tools" />
+        <git url="git://10.18.8.31/go.pipeline.git" />
       </materials>
       <stage name="Stage-1">
         <jobs>
