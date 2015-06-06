@@ -1,0 +1,48 @@
+#*************************GO-LICENSE-START*********************************
+ * Copyright 2014 ThoughtWorks, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *************************GO-LICENSE-END***********************************#
+
+<div id="tab-content-of-console" $buildoutput_extra_attrs>
+    <div id="console-action-bar">
+        <div>
+            <a class='change-theme' href="javascript:void(0);">Change theme</a>
+            <a href="$req.getContextPath()/files/${presenter.consoleoutLocator}">Raw output</a>
+        </div>
+    </div>
+    #if($presenter.isCompleted())
+        <pre id="buildoutput_pre"></pre>
+        <div class="console_iframe_container"></div>
+        <div class="widget" id="build-output-console-warnning" style="display: none;">No console output.</div>
+    #else
+        <pre id="buildoutput_pre"></pre>
+    #end
+</div>
+
+<script type="text/javascript">
+    if(navigator && navigator.userAgent && navigator.userAgent.include('Firefox/2') && $('buildoutput_pre')){
+        (function(){
+            $('buildoutput_pre').up('div').setStyle({overflow: 'visible'});
+        }).delay(0.1);
+    }
+    jQuery(function(){
+        jQuery('.change-theme').on('click', function(evt){
+            if (jQuery('#buildoutput_pre').length === 0){
+                return; // there's no theme to change
+            }
+            jQuery('#buildoutput_pre').toggleClass('white-theme');
+            jQuery('#console-action-bar').toggleClass('white-theme');
+        });
+    });
+</script>

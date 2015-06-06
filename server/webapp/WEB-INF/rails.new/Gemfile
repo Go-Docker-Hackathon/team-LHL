@@ -1,0 +1,21 @@
+source 'https://rubygems.org'
+
+gem 'rails', '4.0.4'
+
+gem 'validatable', '>=1.6.0'
+
+gem 'dynamic_form'
+
+gem 'gadgets', '0.0.1', path: 'vendor/engines/gadgets'
+gem 'sprockets-rails'
+gem 'sass-rails'
+gem 'yui-compressor'
+gem 'oauth2_provider', '1.0.3', path: 'vendor/engines/oauth2_provider'
+gem 'versionist'
+gem 'roar'
+
+group :development, :test do
+  gem "jasmine-rails"
+  gem 'jasmine-jquery-rails'
+  gem 'jasmine-junitreporter'
+end
