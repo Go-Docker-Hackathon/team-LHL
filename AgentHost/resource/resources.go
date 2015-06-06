@@ -4,6 +4,7 @@ import(
 	"fmt"
 	"encoding/json"
 	"io/ioutil"
+	"path/filepath"
 )
 
 type Image struct {
@@ -13,7 +14,8 @@ type Image struct {
 
 func getImagesList() []Image {
 	var images []Image
-	file,_ := ioutil.ReadFile("/home/xkli/go/src/github.com/Go-Docker-Hackathon/team-LHL/AgentHost/dockerimagesjsonfile/dockerimages.josn")	
+	absPath, _ := filepath.Abs("./dockerimagesjsonfile/dockerimages.josn")
+	file,_ := ioutil.ReadFile(absPath)	
 	err := json.Unmarshal(file, &images)
 	if err != nil {
 		fmt.Println(err)
