@@ -1,4 +1,4 @@
-package main
+package controllers
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ func getPostData(r *http.Request) map[string]string {
 	return postData
 }
 
-func createContainer(w http.ResponseWriter, r *http.Request) string {
+func CreateContainer(w http.ResponseWriter, r *http.Request) string {
 	data := getPostData(r)
 	client, _ := docker.NewClient("unix:///var/run/docker.sock")
 	config := &docker.Config{
