@@ -35,9 +35,9 @@ func contains(item string, list []string) bool {
     return false
 }
 
-func tagsMatch(tags []string, resources []string) bool {
-	for _, tag := range tags {
-	    if !contains(tag, resources) {
+func tagsMatch(agentTags []string, imageTags []string) bool {
+	for _, tag := range agentTags {
+	    if !contains(tag, imageTags) {
 		return false
 	    }
 	}
@@ -53,11 +53,11 @@ func GetImageTags(imageId string) []string {
 	return []string{}
 }
 
-func GetImage(resources []string) string {
+func GetImage(agentTags []string) string {
 	images := getImagesList()
 	
 	for _, image := range images {
-	    if(tagsMatch(resources, image.Tags)){
+	    if(tagsMatch(agentTags, image.Tags)){
 	        return image.Imageid
 	    }
 	}
